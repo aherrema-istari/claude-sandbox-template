@@ -15,10 +15,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 # Claude Code (installed globally so all users can access it)
 RUN npm install -g @anthropic-ai/claude-code
 
-# Project Python dependencies
-ARG CONDA_PACKAGES="openmdao"
-RUN conda install -y $CONDA_PACKAGES
-
 # Create a non-root user (Claude refuses --dangerously-skip-permissions as root)
 RUN useradd -m -s /bin/bash claude && \
     echo "claude ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
