@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e
 
-IMAGE="istari-openmdao-wrapper"
-
 # Read project name from .claude-project file in the current directory
 PROJECT_NAME=$(cat .claude-project 2>/dev/null | tr -d '[:space:]')
 if [[ -z "$PROJECT_NAME" ]]; then
   echo "Error: .claude-project file not found or empty. Create one with a project slug, e.g. 'my-project'." >&2
   exit 1
 fi
+
+IMAGE="$PROJECT_NAME"
 
 # Build image (cached after first run — only rebuilds if Dockerfile changes)
 docker build -t "$IMAGE" .devcontainer/
