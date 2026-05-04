@@ -20,15 +20,17 @@ docker build -t "$IMAGE" .devcontainer/
 #
 # ~/.claude is mounted so Claude has access to full conversation history and memory.
 
-CLAUDE_CMD="claude --continue --dangerously-skip-permissions"
 if [[ "$1" == "--fresh" ]]; then
-  CLAUDE_CMD="claude --dangerously-skip-permissions"
+  CLAUDE_ARGS=(claude --dangerously-skip-permissions)
 elif [[ "$1" == "--shell" ]]; then
-  CLAUDE_CMD="bash"
+  CLAUDE_ARGS=(bash)
+else
+  CLAUDE_ARGS=(bash -c 'claude --continue --dangerously-skip-permissions || claude --dangerously-skip-permissions')
 fi
 
 docker run -it --rm \
   --user "$(id -u):$(id -g)" \
+  --workdir "/workspace/$PROJECT_NAME" \
   -e HOME=/home/claude \
   -v "$(pwd):/workspace/$PROJECT_NAME" \
   -v "$HOME/.claude:/home/claude/.claude" \
@@ -37,4 +39,4 @@ docker run -it --rm \
   -v "$HOME/.gitconfig:/home/claude/.gitconfig:ro" \
   -e ANTHROPIC_API_KEY \
   "$IMAGE" \
-  $CLAUDE_CMD
+  "${CLAUDE_ARGS[@]}"
